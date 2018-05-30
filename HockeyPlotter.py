@@ -4,151 +4,181 @@ from tkinter import *
 
 root = tk.Tk()
 
-CANVAS_WIDTH = 100
-CANVAS_HEIGHT = 85
-SCALE = 6
+RED = "#FF0000"
+BLUE = "#0000FF"
+WHITE = "#FFFFFF"
+BLACK = "#000000"
 
-def circle(canvas, x, y, r, out, fil, wi):
-    id = canvas.create_oval(x-r,y-r,x+r,y+r, outline = out, fill = fil, width = wi)
-    return id
+class HockeyPlotter:
 
-def drawHalfRink(canvas):
-    # cir1 = canvas.create_oval(101*SCALE, 85*SCALE, (100-28*2)*SCALE, (85-28*2)*SCALE,outline="#000000",width=3)
-    cir1 = circle(canvas, (100-28)*SCALE, (85-28)*SCALE, 28*SCALE, "#000000", "#FFFFFF", 3)
-    cir2 = circle(canvas, (100-28)*SCALE, (29)*SCALE, 28*SCALE, "#000000", "#FFFFFF", 3)
-    cover1 = canvas.create_rectangle((100-29*2)*SCALE,(4/SCALE)*SCALE,(100-28)*SCALE,(85-2/SCALE)*SCALE, outline="#FFFFFF", fill="#FFFFFF")
-    cover2 = canvas.create_rectangle((100)*SCALE,(28)*SCALE,(100-28)*SCALE,(85-27)*SCALE,outline="#FFFFFF",fill="#FFFFFF")
-    right_ice = canvas.create_rectangle(.5*SCALE,1*SCALE,100*SCALE,85*SCALE, width = 3)
+    outline = WHITE
+    fill = WHITE
+    SCALE = 6
 
-def drawFullRink(canvas):
-    cir1 = circle(canvas, (200-28)*SCALE, (85-28)*SCALE, 28*SCALE, "#000000", "#FFFFFF", 3)
-    cir2 = circle(canvas, (200-28)*SCALE, (29)*SCALE, 28*SCALE, "#000000", "#FFFFFF", 3)
-    cir3 = circle(canvas, (29)*SCALE, (85-28)*SCALE, 28*SCALE, "#000000", "#FFFFFF", 3)
-    cir4 = circle(canvas, (29)*SCALE, (29)*SCALE, 28*SCALE, "#000000", "#FFFFFF", 3)
-    cover1 = canvas.create_rectangle((200-29*2)*SCALE,(4/SCALE)*SCALE,(200-28)*SCALE,(85-2/SCALE)*SCALE, outline="#FFFFFF", fill="#FFFFFF")
-    cover2 = canvas.create_rectangle((200)*SCALE,(28)*SCALE,(200-28)*SCALE,(85-27)*SCALE,outline="#FFFFFF",fill="#FFFFFF")
-    cover1 = canvas.create_rectangle((29*2)*SCALE,(4/SCALE)*SCALE,(28)*SCALE,(85-2/SCALE)*SCALE, outline="#FFFFFF", fill="#FFFFFF")
-    cover2 = canvas.create_rectangle((1)*SCALE,(28)*SCALE,(28)*SCALE,(85-27)*SCALE,outline="#FFFFFF",fill="#FFFFFF")
-    right_ice = canvas.create_rectangle(1*SCALE,1*SCALE,200*SCALE,85*SCALE, width = 3)
+    def __init__(self, canvas, scale):
+        self.canvas = canvas
+        self.SCALE = scale
 
-def drawHalfCrease(canvas):
-    cir = circle(canvas,(25+64)*SCALE,(85/2)*SCALE,6*SCALE,"#FF0000","#0000FF",3)
-    rect = canvas.create_rectangle((25+64+1/SCALE)*SCALE,(85/2-6)*SCALE, (25+64+6)*SCALE,(85/2+6)*SCALE, fill="#FFFFFF", outline="#FFFFFF", width=3)
+    def set_fill_and_outline(self, outline, fill):
+        self.outline = outline
+        self.fill = fill
 
-def drawFullCrease(canvas):
-    cir = circle(canvas,(100+25+64)*SCALE,(85/2)*SCALE,6*SCALE,"#FF0000","#0000FF",3)
-    rect = canvas.create_rectangle((100+25+64+1/SCALE)*SCALE,(85/2-6)*SCALE, (100+25+64+6)*SCALE,(85/2+6)*SCALE, fill="#FFFFFF", outline="#FFFFFF", width=3)
+    def circle(self, x, y, r):
+        id = self.canvas.create_oval(x-r,y-r,x+r,y+r, outline = self.outline, fill = self.fill, width = 3)
+        return id
 
-    cir2 = circle(canvas,(100-(25+64))*SCALE,(85/2)*SCALE,6*SCALE,"#FF0000","#0000FF",3)
-    rect2 = canvas.create_rectangle((100-(25+64+1/SCALE))*SCALE,(85/2-6)*SCALE, (100-(25+64+6))*SCALE,(85/2+6)*SCALE, fill="#FFFFFF", outline="#FFFFFF", width=3)
+    def drawHalfRink(self):
+        # cir1 = self.canvas.create_oval(101*self.SCALE, 85*self.SCALE, (100-28*2)*self.SCALE, (85-28*2)*self.SCALE,outline=BLACK,width=3)
+        self.set_fill_and_outline(BLACK, WHITE)
+        cir1 = self.circle( (100-28)*self.SCALE, (85-28)*self.SCALE, 28*self.SCALE, BLACK, WHITE)
+        cir2 = self.circle( (100-28)*self.SCALE, (29)*self.SCALE, 28*self.SCALE, BLACK, WHITE)
+        cover1 = self.canvas.create_rectangle((100-29*2)*self.SCALE,(4/self.SCALE)*self.SCALE,(100-28)*self.SCALE,(85-2/self.SCALE)*self.SCALE, outline=WHITE, fill=WHITE)
+        cover2 = self.canvas.create_rectangle((100)*self.SCALE,(28)*self.SCALE,(100-28)*self.SCALE,(85-27)*self.SCALE,outline=WHITE,fill=WHITE)
+        right_ice = self.canvas.create_rectangle(.5*self.SCALE,1*self.SCALE,100*self.SCALE,85*self.SCALE, width = 3)
 
-def drawHalfLines(canvas):
-    red_line = canvas.create_line(.5*SCALE,1*SCALE,.5*SCALE,85*SCALE,
-        fill="#FF0000",
-        width=5)
-    canvas.itemconfig(red_line, tags=("red","line"))
+    def drawFullRink(self):
+        self.set_fill_and_outline(BLACK, WHITE)
+        cir1 = self.circle( (200-28)*self.SCALE, (85-28)*self.SCALE, 28*self.SCALE)
+        cir2 = self.circle( (200-28)*self.SCALE, (29)*self.SCALE, 28*self.SCALE)
+        cir3 = self.circle( (29)*self.SCALE, (85-28)*self.SCALE, 28*self.SCALE)
+        cir4 = self.circle( (29)*self.SCALE, (29)*self.SCALE, 28*self.SCALE)
+        cover1 = self.canvas.create_rectangle((200-29*2)*self.SCALE,(4/self.SCALE)*self.SCALE,(200-28)*self.SCALE,(85-2/self.SCALE)*self.SCALE, outline=WHITE, fill=WHITE)
+        cover2 = self.canvas.create_rectangle((200)*self.SCALE,(28)*self.SCALE,(200-28)*self.SCALE,(85-27)*self.SCALE,outline=WHITE,fill=WHITE)
+        cover1 = self.canvas.create_rectangle((29*2)*self.SCALE,(4/self.SCALE)*self.SCALE,(28)*self.SCALE,(85-2/self.SCALE)*self.SCALE, outline=WHITE, fill=WHITE)
+        cover2 = self.canvas.create_rectangle((1)*self.SCALE,(28)*self.SCALE,(28)*self.SCALE,(85-27)*self.SCALE,outline=WHITE,fill=WHITE)
+        right_ice = self.canvas.create_rectangle(1*self.SCALE,1*self.SCALE,200*self.SCALE,85*self.SCALE, width = 3)
 
-    blue_line = canvas.create_line(26*SCALE,1*SCALE,26*SCALE,86*SCALE,
-        fill="#0000FF",
-        width=3)
-    canvas.itemconfig(blue_line, tags=("blue","line"))
+    def drawHalfCrease(self):
+        self.set_fill_and_outline(RED, BLUE)
+        cir = self.circle((25+64)*self.SCALE,(85/2)*self.SCALE,6*self.SCALE,RED,BLUE)
+        rect = self.canvas.create_rectangle((25+64+1/self.SCALE)*self.SCALE,(85/2-6)*self.SCALE, (25+64+6)*self.SCALE,(85/2+6)*self.SCALE, fill=WHITE, outline=WHITE, width=3)
 
-    goalie_line = canvas.create_line(89*SCALE,(1+6)*SCALE,89*SCALE,(85-6)*SCALE,
-        fill="#FF0000",
-        width=3)
-    canvas.itemconfig(goalie_line, tags=("red","line"))
+    def drawFullCrease(self):
+        self.set_fill_and_outline(RED, BLUE)
+        cir = self.circle((100+25+64)*self.SCALE,(85/2)*self.SCALE,6*self.SCALE)
+        rect = self.canvas.create_rectangle((100+25+64+1/self.SCALE)*self.SCALE,(85/2-6)*self.SCALE, (100+25+64+6)*self.SCALE,(85/2+6)*self.SCALE, fill=WHITE, outline=WHITE, width=3)
 
-def drawFullLines(canvas):
-    red_line = canvas.create_line((100+.5)*SCALE,1*SCALE,(100+.5)*SCALE,85*SCALE,
-        fill="#FF0000",
-        width=5)
-    canvas.itemconfig(red_line, tags=("red","line"))
+        cir2 = self.circle((100-(25+64))*self.SCALE,(85/2)*self.SCALE,6*self.SCALE)
+        rect2 = self.canvas.create_rectangle((100-(25+64+1/self.SCALE))*self.SCALE,(85/2-6)*self.SCALE, (100-(25+64+6))*self.SCALE,(85/2+6)*self.SCALE, fill=WHITE, outline=WHITE, width=3)
 
-    blue_line = canvas.create_line((100+26)*SCALE,1*SCALE,(100+26)*SCALE,86*SCALE,
-        fill="#0000FF",
-        width=3)
-    canvas.itemconfig(blue_line, tags=("blue","line"))
+    def drawHalfLines(self):
+        red_line = self.canvas.create_line(.5*self.SCALE,1*self.SCALE,.5*self.SCALE,85*self.SCALE,
+            fill=RED,
+            width=5)
+        self.canvas.itemconfig(red_line, tags=("red","line"))
 
-    goalie_line = canvas.create_line((100+89)*SCALE,(1+6)*SCALE,(100+89)*SCALE,(85-6)*SCALE,
-        fill="#FF0000",
-        width=3)
-    canvas.itemconfig(goalie_line, tags=("red","line"))
+        blue_line = self.canvas.create_line(26*self.SCALE,1*self.SCALE,26*self.SCALE,86*self.SCALE,
+            fill=BLUE,
+            width=3)
+        self.canvas.itemconfig(blue_line, tags=("blue","line"))
 
-    blue_line = canvas.create_line((100-26)*SCALE,1*SCALE,(100-26)*SCALE,86*SCALE,
-        fill="#0000FF",
-        width=3)
-    canvas.itemconfig(blue_line, tags=("blue","line"))
+        goalie_line = self.canvas.create_line(89*self.SCALE,(1+6)*self.SCALE,89*self.SCALE,(85-6)*self.SCALE,
+            fill=RED,
+            width=3)
+        self.canvas.itemconfig(goalie_line, tags=("red","line"))
 
-    goalie_line = canvas.create_line((100-89)*SCALE,(1+6)*SCALE,(100-89)*SCALE,(85-6)*SCALE,
-        fill="#FF0000",
-        width=3)
-    canvas.itemconfig(goalie_line, tags=("red","line"))
+    def drawFullLines(self):
+        red_line = self.canvas.create_line((100+.5)*self.SCALE,1*self.SCALE,(100+.5)*self.SCALE,85*self.SCALE,
+            fill=RED,
+            width=5)
+        self.canvas.itemconfig(red_line, tags=("red","line"))
 
-def drawHalfFaceoffs(canvas):
-    top_circle = circle(canvas,70*SCALE,(85/2-21)*SCALE,15*SCALE,"#FF0000","#FFFFFF",3)
-    canvas.itemconfig(top_circle, tags=("red","faceoff"))
-    bottom_circle = circle(canvas,70*SCALE,(85/2+22)*SCALE,15*SCALE,"#FF0000","#FFFFFF",3)
-    canvas.itemconfig(bottom_circle, tags=("red","faceoff"))
-    center_circle = circle(canvas,0*SCALE,(85/2)*SCALE,15*SCALE,"#0000FF","#FFFFFF",3)
-    canvas.itemconfig(center_circle, tags=("blue","faceoff"))
-    top_in = circle(canvas,70*SCALE,(85/2-21)*SCALE,2*SCALE,"#FF0000","#FF0000",3)
-    canvas.itemconfig(top_in, tags=("red","faceoff"))
-    bottom_in = circle(canvas,70*SCALE,(85/2+22)*SCALE,2*SCALE,"#FF0000","#FF0000",3)
-    canvas.itemconfig(bottom_in, tags=("red","faceoff"))
-    center_in = circle(canvas,0*SCALE,(85/2)*SCALE,2*SCALE,"#0000FF","#0000FF",3)
-    canvas.itemconfig(center_in, tags=("blue","faceoff"))
+        blue_line = self.canvas.create_line((100+26)*self.SCALE,1*self.SCALE,(100+26)*self.SCALE,86*self.SCALE,
+            fill=BLUE,
+            width=3)
+        self.canvas.itemconfig(blue_line, tags=("blue","line"))
+
+        goalie_line = self.canvas.create_line((100+89)*self.SCALE,(1+6)*self.SCALE,(100+89)*self.SCALE,(85-6)*self.SCALE,
+            fill=RED,
+            width=3)
+        self.canvas.itemconfig(goalie_line, tags=("red","line"))
+
+        blue_line = self.canvas.create_line((100-26)*self.SCALE,1*self.SCALE,(100-26)*self.SCALE,86*self.SCALE,
+            fill=BLUE,
+            width=3)
+        self.canvas.itemconfig(blue_line, tags=("blue","line"))
+
+        goalie_line = self.canvas.create_line((100-89)*self.SCALE,(1+6)*self.SCALE,(100-89)*self.SCALE,(85-6)*self.SCALE,
+            fill=RED,
+            width=3)
+        self.canvas.itemconfig(goalie_line, tags=("red","line"))
+
+    def drawHalfFaceoffs(self):
+        self.set_fill_and_outline(RED, WHITE)
+        top_circle = self.circle(70*self.SCALE,(85/2-21)*self.SCALE,15*self.SCALE,RED,WHITE)
+        self.canvas.itemconfig(top_circle, tags=("red","faceoff"))
+        bottom_circle = self.circle(70*self.SCALE,(85/2+22)*self.SCALE,15*self.SCALE,RED,WHITE)
+        self.canvas.itemconfig(bottom_circle, tags=("red","faceoff"))
+
+        self.set_fill_and_outline(BLUE, WHITE)
+        center_circle = self.circle(0*self.SCALE,(85/2)*self.SCALE,15*self.SCALE,BLUE,WHITE)
+        self.canvas.itemconfig(center_circle, tags=("blue","faceoff"))
+
+        self.set_fill_and_outline(RED, RED)
+        top_in = self.circle(70*self.SCALE,(85/2-21)*self.SCALE,2*self.SCALE,RED,RED)
+        self.canvas.itemconfig(top_in, tags=("red","faceoff"))
+        bottom_in = self.circle(70*self.SCALE,(85/2+22)*self.SCALE,2*self.SCALE,RED,RED)
+        self.canvas.itemconfig(bottom_in, tags=("red","faceoff"))
+
+        self.set_fill_and_outline(BLUE, BLUE)
+        center_in = self.circle(0*self.SCALE,(85/2)*self.SCALE,2*self.SCALE,BLUE,BLUE)
+        self.canvas.itemconfig(center_in, tags=("blue","faceoff"))
 
 
-def drawFullFaceoffs(canvas):
-    top_circle = circle(canvas,(100+70)*SCALE,(85/2-21)*SCALE,15*SCALE,"#FF0000","#FFFFFF",3)
-    canvas.itemconfig(top_circle, tags=("red","faceoff"))
-    bottom_circle = circle(canvas,(100+70)*SCALE,(85/2+22)*SCALE,15*SCALE,"#FF0000","#FFFFFF",3)
-    canvas.itemconfig(bottom_circle, tags=("red","faceoff"))
-    center_circle = circle(canvas,(100+0)*SCALE,(85/2)*SCALE,15*SCALE,"#0000FF","#FFFFFF",3)
-    canvas.itemconfig(center_circle, tags=("blue","faceoff"))
-    top_in = circle(canvas,(100+70)*SCALE,(85/2-21)*SCALE,2*SCALE,"#FF0000","#FF0000",3)
-    canvas.itemconfig(top_in, tags=("red","faceoff"))
-    bottom_in = circle(canvas,(100+70)*SCALE,(85/2+22)*SCALE,2*SCALE,"#FF0000","#FF0000",3)
-    canvas.itemconfig(bottom_in, tags=("red","faceoff"))
-    center_in = circle(canvas,(100+0)*SCALE,(85/2)*SCALE,2*SCALE,"#0000FF","#0000FF",3)
-    canvas.itemconfig(center_in, tags=("blue","faceoff"))
+    def drawFullFaceoffs(self):
+        self.set_fill_and_outline(RED, WHITE)
+        top_circle = self.circle((100+70)*self.SCALE,(85/2-21)*self.SCALE,15*self.SCALE)
+        self.canvas.itemconfig(top_circle, tags=("red","faceoff"))
+        bottom_circle = self.circle((100+70)*self.SCALE,(85/2+22)*self.SCALE,15*self.SCALE)
+        self.canvas.itemconfig(bottom_circle, tags=("red","faceoff"))
+        top_circle = self.circle((100-70)*self.SCALE,(85/2-21)*self.SCALE,15*self.SCALE)
+        self.canvas.itemconfig(top_circle, tags=("red","faceoff"))
+        bottom_circle = self.circle((100-70)*self.SCALE,(85/2+22)*self.SCALE,15*self.SCALE)
+        self.canvas.itemconfig(bottom_circle, tags=("red","faceoff"))
 
-    top_circle = circle(canvas,(100-70)*SCALE,(85/2-21)*SCALE,15*SCALE,"#FF0000","#FFFFFF",3)
-    canvas.itemconfig(top_circle, tags=("red","faceoff"))
-    bottom_circle = circle(canvas,(100-70)*SCALE,(85/2+22)*SCALE,15*SCALE,"#FF0000","#FFFFFF",3)
-    canvas.itemconfig(bottom_circle, tags=("red","faceoff"))
-    top_in = circle(canvas,(100-70)*SCALE,(85/2-21)*SCALE,2*SCALE,"#FF0000","#FF0000",3)
-    canvas.itemconfig(top_in, tags=("red","faceoff"))
-    bottom_in = circle(canvas,(100-70)*SCALE,(85/2+22)*SCALE,2*SCALE,"#FF0000","#FF0000",3)
-    canvas.itemconfig(bottom_in, tags=("red","faceoff"))
+        self.set_fill_and_outline(BLUE, WHITE)
+        center_circle = self.circle((100+0)*self.SCALE,(85/2)*self.SCALE,15*self.SCALE)
+        self.canvas.itemconfig(center_circle, tags=("blue","faceoff"))
 
-def drawHalfIce():
-    global w
-    w = Canvas(root,
-           width=CANVAS_WIDTH*SCALE,
-           height=CANVAS_HEIGHT*SCALE)
-    w.pack()
+        self.set_fill_and_outline(RED, RED)
+        top_in = self.circle((100+70)*self.SCALE,(85/2-21)*self.SCALE,2*self.SCALE)
+        self.canvas.itemconfig(top_in, tags=("red","faceoff"))
+        bottom_in = self.circle((100+70)*self.SCALE,(85/2+22)*self.SCALE,2*self.SCALE)
+        self.canvas.itemconfig(bottom_in, tags=("red","faceoff"))
+        top_in = self.circle((100-70)*self.SCALE,(85/2-21)*self.SCALE,2*self.SCALE)
+        self.canvas.itemconfig(top_in, tags=("red","faceoff"))
+        bottom_in = self.circle((100-70)*self.SCALE,(85/2+22)*self.SCALE,2*self.SCALE)
+        self.canvas.itemconfig(bottom_in, tags=("red","faceoff"))
 
-    drawHalfRink(w)
-    drawHalfFaceoffs(w)
-    drawHalfCrease(w)
-    drawHalfLines(w)
+        self.set_fill_and_outline(BLUE, BLUE)
+        center_in = self.circle((100+0)*self.SCALE,(85/2)*self.SCALE,2*self.SCALE)
+        self.canvas.itemconfig(center_in, tags=("blue","faceoff"))
 
-def drawFullIce():
-    global w
-    w = Canvas(root,
-           width=CANVAS_WIDTH*SCALE*2,
-           height=CANVAS_HEIGHT*SCALE*2)
-    w.pack()
+    def drawHalfIce(self):
+        self.drawHalfRink()
+        self.drawHalfFaceoffs()
+        self.drawHalfCrease()
+        self.drawHalfLines()
 
-    drawFullRink(w)
-    drawFullCrease(w)
-    drawFullLines(w)
-    drawFullFaceoffs(w)
+    def drawFullIce(self):
+        self.drawFullRink()
+        self.drawFullCrease()
+        self.drawFullLines()
+        self.drawFullFaceoffs()
 
 
 def main():
-    drawFullIce()
+    scale = 6
+    CANVAS_WIDTH = 100
+    CANVAS_HEIGHT = 85
+
+    canvas = Canvas(root,
+               width=CANVAS_WIDTH*scale*2,
+               height=CANVAS_HEIGHT*scale*2)
+    canvas.pack()
+    hp = HockeyPlotter(canvas, 6)
+    hp.drawFullIce()
+    # hp.drawHalfIce()
     root.mainloop()
 
 main()

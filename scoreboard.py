@@ -51,6 +51,12 @@ class Scoreboard:
     def set_away_score(self, score):
         self.away_score = score
 
+    def set_score(self, score):
+        self.home_score = score.get("home")
+        self.away_score = score.get("away")
+        self.canvas.itemconfigure(self.score, text="%d-%d"%(self.home_score, self.away_score))
+        self.canvas.update()
+
     def increase_home_score(self):
         self.home_score = self.home_score + 1
         self.canvas.itemconfigure(self.score, text="%d-%d"%(self.home_score, self.away_score))

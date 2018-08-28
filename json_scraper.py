@@ -1,24 +1,40 @@
 __author__ = 'brycerich'
 
-class JsonScraper:
-    """
-    All functions in this class assume they are getting data from the feed/live endpoint unless otherwise specified
-    """
+# class JsonScraper:
+#     """
+#     All functions in this class assume they are getting data from the feed/live endpoint unless otherwise specified
+#     """
 
-    def get_teams(self, json):
-        """
-        Obtains the teams in a particular live feed
-        :param json:
-        :return: tuple containing (home_team, away_team)
-        """
-        home_team = json.get('gameData').get('teams').get('home').get('teamName')
-        away_team = json.get('gameData').get('teams').get('away').get('teamName')
-        return (home_team, away_team)
+def get_teams(json):
+    """
+    Obtains the teams in a particular live feed
+    :param json:
+    :return: tuple containing (home_team, away_team)
+    """
+    home_team = json.get('gameData').get('teams').get('home').get('name')
+    away_team = json.get('gameData').get('teams').get('away').get('name')
+    return (home_team, away_team)
 
-    def check_if_scoring_play(self, json, play_number=-1):
-        scoring_play = False
-        plays = json.get('liveData').get('plays')
-        if(play_number != -1):
-            scoring_play = play_number in plays.get("scoringPlays")
+def get_score(json, play_number=-1):
+    return json.get('liveData').get('plays').get('allPlays')[play_number].get('about').get('goals')
+
+def check_if_scoring_play(json, play_number=-1):
+    is_scoring_play = False
+    scoring_team = ''
+    plays = json.get('liveData').get('plays')
+    if(play_number != -1):
+        if(play_number in plays.get("scoringPlays")):
+            is_scoring_play = True
+            scoring_team = plays.get('allPlays')[play_number].get('team').get('name')
+    else:
+        num_plays = len(plays.get('allPlays'))
+        if(num_plays-1 in plays.get("scoringPlays")):
+            is_scoring_play = True
+            scoring_team = plays.get('allPlays')[play_number].get('team').get('name')
+    return (is_scoring_play, scoring_team)
+
+
+if __name__ == '__main__':
+    list = [1,2,3,4,5]
 
 

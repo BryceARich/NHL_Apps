@@ -1,6 +1,7 @@
 __author__ = 'brycerich'
 import requests, json, datetime
 from util.url_templates import scheduled_games_endpoint, nhl_schedule, nhl_game, base_url
+from json_scraper import check_if_scoring_play, get_teams, get_score
 
 class EndpointManager:
 
@@ -53,37 +54,20 @@ if __name__ == '__main__':
         for game in date.get('games'):
             game_id = game.get('gamePk')
             game_events = epm.get_game_events(game_id)
-            score = game_events.get('liveData').get('plays').get('allPlays')[0].get('about').get('goals')
-            away_team = game_events.get('gameData').get('teams').get('away').get('teamName')
-            home_team = game_events.get('gameData').get('teams').get('home').get('teamName')
-            print(away_team)
-            print(home_team)
+            score = get_score(game_events,0)
+            home_team, away_team = get_teams(game_events)
+            print(away_team + " vs " + home_team)
             print(score)
             for i in range(len(game_events.get('liveData').get('plays').get('allPlays'))):
                 game_events = epm.get_game_events(game_id)
-                # print(game_events.keys())
-                # gameData = game_events.get('gameData')
-                # print(gameData.keys())
-                # print(gameData.get('teams'))
-                liveData = game_events.get('liveData')
-                # print(liveData.keys())
-                plays = liveData.get('plays')
-                # print(plays.keys())
-                # print(plays.get('scoringPlays')) #can utilize this to know if score is different than it was before
-                if i in plays.get('scoringPlays'):
-
-                    new_score = plays.get('allPlays')[i].get('about').get('goals')
-                    if(new_score.get('away') > score.get('away')):
+                goal, team = check_if_scoring_play(game_events,i)
+                if goal:
+                    score = get_score(game_events, i)
+                    if team == away_team:
                         print("%s SCORE" % away_team)
                     else:
-                        print("%s SCORES" % home_team)
-                    print(new_score)
-                    score = new_score
-                # else:
-                #     print('...%s' % i)
-                # for scoring_play in plays.get('scoringPlays'):
-                #     print(plays.get('allPlays')[scoring_play])
-                #     print(plays.get('allPlays')[scoring_play].get('about').get('goals'))
+                        print("%s SCORE" % home_team)
+                    print(score)
                 # print(game.keys())
                 # print(game.get('gamePk'))
                 # print(game.get('status'))

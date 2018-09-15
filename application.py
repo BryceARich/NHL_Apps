@@ -1,10 +1,10 @@
 __author__ = 'brycerich'
-from scoreboard import Scoreboard
+from led_scoreboard import LedScoreboard
 from endpoint_manager import EndpointManager
 from json_scraper import get_score, get_teams, check_if_scoring_play
 
 if __name__ == '__main__':
-    sb = Scoreboard()
+    sb = LedScoreboard()
     epm = EndpointManager()
 
     date_range = {'startDate': "2017-09-17",
@@ -13,6 +13,7 @@ if __name__ == '__main__':
 
     for date in payload.get('dates'):
         for game in date.get('games'):
+            ##game_id = "2017021266"
             game_id = game.get('gamePk')
             game_events = epm.get_game_events(game_id)
             home_team, away_team = get_teams(game_events)

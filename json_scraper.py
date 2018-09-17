@@ -18,6 +18,9 @@ def get_teams(json):
 def get_score(json, play_number=-1):
     return json.get('liveData').get('plays').get('allPlays')[play_number].get('about').get('goals')
 
+def get_play_summary(json, play_number=-1):
+    return json.get('liveData').get('plays').get('allPlays')[play_number].get('result').get('description')
+
 def check_if_scoring_play(json, play_number=-1):
     is_scoring_play = False
     scoring_team = ''

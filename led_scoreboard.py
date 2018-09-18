@@ -20,6 +20,8 @@ class LedScoreboard:
         self.offscreen_canvas = self.matrix.CreateFrameCanvas()
         self.home_score = 0
         self.away_score = 0
+        self.ordinal = ""
+        self.time_remaining = ""
         self.configure_text()
         self.image_directory = 'resources/tsn_pixelated_logos'
         self.filename_template = '%s.ppm'
@@ -27,12 +29,12 @@ class LedScoreboard:
 
     def set_home_team(self, team_name):
         self.home_team = team_name
-        self.home_logo = Image.open(os.path.join(self.image_directory, self.filename_template % self.home_team.lower()))
+        self.home_logo = Image.open(os.path.join(self.image_directory, self.filename_template % self.home_team.lower().replace(" ","")))
         self.home_logo.thumbnail((20, 20), Image.ANTIALIAS)
 
     def set_away_team(self, team_name):
         self.away_team = team_name
-        self.away_logo = Image.open(os.path.join(self.image_directory, self.filename_template % self.away_team.lower()))
+        self.away_logo = Image.open(os.path.join(self.image_directory, self.filename_template % self.away_team.lower().replace(" ","")))
         self.away_logo.thumbnail((20, 20), Image.ANTIALIAS)
 
     def draw_home_team(self):
@@ -53,6 +55,11 @@ class LedScoreboard:
         self.home_score = score.get("home")
         self.away_score = score.get("away")
         self.update_scoreboard()
+        
+    def set_time(self, ordinal, remaining):
+        self.ordinal = ordinal
+        self.time_remaining = remaining
+        self.update_scoreboard()
 
     def increase_home_score(self):
         self.home_score = self.home_score + 1
@@ -66,7 +73,7 @@ class LedScoreboard:
     def configure_text(self):
         self.font = graphics.Font()
         self.font.LoadFont("fonts/5x7.bdf")
-        self.score_ypos = 18
+        self.score_ypos = 15
         self.score_xpos = 24
         self.textColor = graphics.Color(128,0,0)
 
@@ -75,20 +82,35 @@ class LedScoreboard:
         graphics.DrawText(self.offscreen_canvas,
                           self.font,
                           self.score_xpos,
-                          self.score_ypos,
+                          self.score_ypos-9,
+                          self.textColor,
+                          self.ordinal
+                          )
+        graphics.DrawText(self.offscreen_canvas,
+                          self.font,
+                          self.score_xpos-5,
+                          self.score_ypos-2,
+                          self.textColor,
+                          self.time_remaining
+                          )
+        graphics.DrawText(self.offscreen_canvas,
+                          self.font,
+                          self.score_xpos,
+                          self.score_ypos+5,
                           self.textColor,
                           "%d-%d"%(self.home_score, self.away_score)
                           )
+                          
         self.offscreen_canvas = self.matrix.SwapOnVSync(self.offscreen_canvas)
-        self.matrix.SetImage(self.home_logo.convert('RGB'), offset_y=5, offset_x=0, unsafe=False)
-        self.matrix.SetImage(self.away_logo.convert('RGB'), offset_y=5, offset_x=44, unsafe=False)
+        self.matrix.SetImage(self.home_logo.convert('RGB'), offset_y=2, offset_x=0, unsafe=False)
+        self.matrix.SetImage(self.away_logo.convert('RGB'), offset_y=2, offset_x=44, unsafe=False)
 
-    def display_play_description(self, description):
+    def display_play_description(self, description, team):
         pos = self.offscreen_canvas.width
 ##        i = 0
 ##        while i < 3:
 ##        print(team_colors.AVALANCHE)
-        for color in team_colors.AVALANCHE:
+        for color in team_colors.team_colors[team]:
             i = 0
             while(i == 0):
 ##                print(color)
@@ -96,7 +118,7 @@ class LedScoreboard:
                 len = graphics.DrawText(self.offscreen_canvas,
                                   self.font,
                                   pos,
-                                  32,
+                                  29,
                                   color,
                                   description
                                   )
@@ -105,17 +127,30 @@ class LedScoreboard:
                     pos = self.offscreen_canvas.width
                     i += 1
                     
-                
                 graphics.DrawText(self.offscreen_canvas,
-                              self.font,
-                              self.score_xpos,
-                              self.score_ypos,
-                              self.textColor,
-                              "%d-%d"%(self.home_score, self.away_score)
-                              )
+                                  self.font,
+                                  self.score_xpos,
+                                  self.score_ypos-9,
+                                  self.textColor,
+                                  self.ordinal
+                                  )
+                graphics.DrawText(self.offscreen_canvas,
+                                  self.font,
+                                  self.score_xpos-5,
+                                  self.score_ypos-2,
+                                  self.textColor,
+                                  self.time_remaining
+                                  )
+                graphics.DrawText(self.offscreen_canvas,
+                                  self.font,
+                                  self.score_xpos,
+                                  self.score_ypos+5,
+                                  self.textColor,
+                                  "%d-%d"%(self.home_score, self.away_score)
+                                  )
                 self.offscreen_canvas = self.matrix.SwapOnVSync(self.offscreen_canvas)
-                self.matrix.SetImage(self.home_logo.convert('RGB'), offset_y=5, offset_x=0, unsafe=False)
-                self.matrix.SetImage(self.away_logo.convert('RGB'), offset_y=5, offset_x=44, unsafe=False)
+                self.matrix.SetImage(self.home_logo.convert('RGB'), offset_y=2, offset_x=0, unsafe=False)
+                self.matrix.SetImage(self.away_logo.convert('RGB'), offset_y=2, offset_x=44, unsafe=False)
                 time.sleep(0.01)
 
 if __name__ == '__main__':
